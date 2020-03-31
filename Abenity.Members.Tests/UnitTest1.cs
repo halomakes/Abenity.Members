@@ -1,14 +1,14 @@
 using Abenity.Members.Schema;
-using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Abenity.Members.Tests
 {
     public class UnitTest1
     {
-        private IAbenityMembersApiClient apiClient = new AbenityMembersApiClient(new AbenityConfiguration
+        private readonly IAbenityMembersApiClient apiClient = new AbenityMembersApiClient(new AbenityConfiguration
         {
             UseProduction = false,
             Credentials = new AbenityConfiguration.ApiCredential
@@ -23,7 +23,12 @@ namespace Abenity.Members.Tests
                 PublicKeyFilePath = ""
             }
         }, new HttpClient());
+        private readonly ITestOutputHelper output;
 
+        public UnitTest1(ITestOutputHelper output)
+        {
+            this.output = output;
+        }
 
         [Fact]
         public async Task Should_Login()
@@ -45,6 +50,7 @@ namespace Abenity.Members.Tests
             Assert.NotNull(result);
             Assert.NotNull(result.Token);
             Assert.NotEmpty(result.Token);
+            output.WriteLine($"Successfully authenticated user: {result.Token}");
         }
     }
 }
