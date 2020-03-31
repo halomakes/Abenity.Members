@@ -9,6 +9,11 @@
         public string Method { get; set; }
 
         public string Status { get; set; }
-        public string Error { get; set; }
+        public InternalError Error { get; set; }
+
+        public class InternalError
+        {
+            public string Signature { get; set; }
+        }
     }
 }

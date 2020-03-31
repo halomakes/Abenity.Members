@@ -9,7 +9,7 @@ namespace Abenity.Members.Schema
     /// </summary>
     public class SsoRequest
     {
-        [FormName("creation_time")]
+        [FormName("creation_time", Encode = true)]
         public string _creationTime => DateTime.Now.ToString("yyyy-MM-ddTHH:mm:sszzz");
 
         /// <summary>
@@ -35,58 +35,58 @@ namespace Abenity.Members.Schema
         /// The member's email address
         /// </summary>
         /// <remarks>This will also be used for the member's username if possible.</remarks>
-        [FormName("email"), Required, EmailAddress]
+        [FormName("email", Encode = true), Required, EmailAddress]
         public string Email { get; set; }
 
         /// <summary>
         /// Unique username for user
         /// </summary>
         /// <remarks>This may be set to override the default setting of using the member's email address as their username. The username must be unique among all Abenity members (not just within your program).</remarks>
-        [FormName("username")]
+        [FormName("username", Encode = true)]
         public string Username { get; set; }
 
         /// <summary>
         /// User's first name
         /// </summary>
-        [FormName("firstname")]
+        [FormName("firstname", Encode = true)]
         public string FirstName { get; set; }
 
         /// <summary>
         /// User's last name
         /// </summary>
-        [FormName("lastname")]
+        [FormName("lastname", Encode = true)]
         public string LastName { get; set; }
 
         /// <summary>
         /// User's street address
         /// </summary>
-        [FormName("address")]
+        [FormName("address", Encode = true)]
         public string Address { get; set; }
 
         /// <summary>
         /// User's city/locality
         /// </summary>
-        [FormName("city")]
+        [FormName("city", Encode = true)]
         public string City { get; set; }
 
         /// <summary>
         /// User's state/region
         /// </summary>
-        [FormName("state")]
+        [FormName("state", Encode = true)]
         public string State { get; set; }
 
         /// <summary>
         /// User's ZIP/postal code
         /// </summary>
         /// <remarks>The format of this value will be validated against the Country value.</remarks>
-        [FormName("zip")]
+        [FormName("zip", Encode = true)]
         public string Zip { get; set; }
 
         /// <summary>
         /// User's country code
         /// </summary>
         /// <remarks>Formatted as ISO 3166-1 alpha-2 (e.g. US).</remarks>
-        [FormName("country")]
+        [FormName("country", Encode = true)]
         public string Country { get; set; }
 
         /// <summary>
@@ -99,10 +99,10 @@ namespace Abenity.Members.Schema
         /// A custom password for the user
         /// </summary>
         /// <remarks>By default a randomized password will be set. For security, passwords are never communicated to users. Password requirements are subject to change</remarks>
-        [FormName("password"), Obsolete]
+        [FormName("password", Encode = true), Obsolete]
         public string Password { get; set; }
 
-        [FormName("registration_code")]
+        [FormName("registration_code", Encode = true)]
         public string RegistrationCode { get; set; }
     }
 }

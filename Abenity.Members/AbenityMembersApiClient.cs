@@ -57,7 +57,7 @@ namespace Abenity.Members
         /// <returns>SSO authentication result</returns>
         /// <exception cref="AbenityException">Error recieved from Abenity API</exception>
         public async Task<SsoResponse> AuthenticateUserAsync(SsoRequest request) =>
-            await PostAsync<SsoResponse>("/v2/client/sso_member.json", await CreateSsoBody(request));
+            await PostAsync<SsoResponse>("/v2/client/sso_member.json", CreateSsoBody(request));
 
         /// <summary>
         /// Deactivate a user in Abenity
@@ -88,6 +88,7 @@ namespace Abenity.Members
 
         private async Task<TResponse> PostAsync<TResponse>(string endpoint, HttpContent content)
         {
+            SetSecurityProtocol();
             using (var request = new HttpRequestMessage(HttpMethod.Post, endpoint))
             {
                 request.Headers.UserAgent.ParseAdd("abenity/abenity-members-netstandard");
@@ -113,6 +114,7 @@ namespace Abenity.Members
 
         private async Task PostAsync(string endpoint, HttpContent content)
         {
+            SetSecurityProtocol();
             using (var request = new HttpRequestMessage(HttpMethod.Post, endpoint))
             {
                 request.Headers.UserAgent.ParseAdd("abenity/abenity-members-netstandard");
@@ -136,21 +138,20 @@ namespace Abenity.Members
             }
         }
 
-        private async Task<HttpContent> CreateSsoBody<TPayload>(TPayload payload)
+        private HttpContent CreateSsoBody<TPayload>(TPayload payload)
         {
-            var encryptedPayload = await EncryptPayloadWithDes(payload);
+            var encryptedPayload = EncryptPayloadWithDes(payload);
             var request = new AbenitySsoRequest(config.Credentials)
             {
-                EncryptedPayload = encryptedPayload.EncodedMessage,
+                EncryptedPayload = BaseEncode(encryptedPayload.EncodedMessage),
                 Signature = GetSignature(encryptedPayload),
-                Cipher = GetCiper(encryptedPayload),
+                Cipher = GetCipher(encryptedPayload),
                 Iv = BaseEncode(encryptedPayload.Iv)
             };
             return CreateHttpContent(request);
         }
 
-
-        private async Task<EncryptedPayload> EncryptPayloadWithDes<TPayload>(TPayload payload)
+        private EncryptedPayload EncryptPayloadWithDes<TPayload>(TPayload payload)
         {
             // Uses CBC by default.
             // https://msdn.microsoft.com/en-us/library/system.security.cryptography.symmetricalgorithm.mode(v=vs.110).aspx
@@ -160,12 +161,12 @@ namespace Abenity.Members
                 var iv = des.IV;
                 var encryptor = des.CreateEncryptor();
 
-                var data = await CreateHttpContent(payload).ReadAsByteArrayAsync();
+                var data = FormSerializer<TPayload>.AsString(payload).ToByteArray();
                 var resultArray = encryptor.TransformFinalBlock(data, 0, data.Length);
                 des.Clear();
                 return new EncryptedPayload
                 {
-                    EncodedMessage = BaseEncode(resultArray),
+                    EncodedMessage = resultArray,
                     Iv = iv,
                     Key = key
                 };
@@ -174,7 +175,7 @@ namespace Abenity.Members
 
         private string GetSignature(EncryptedPayload payload)
         {
-            byte[] data = Encoding.UTF8.GetBytes(payload.EncodedMessage);
+            byte[] data = payload.EncodedMessage.ToBase64().ToByteArray();
             using (var fileReader = File.OpenText(config.KeyPaths.PrivateKeyFilePath))
             {
                 var pemReader = new PemReader(fileReader);
@@ -187,7 +188,7 @@ namespace Abenity.Members
             }
         }
 
-        private string GetCiper(EncryptedPayload payload)
+        private string GetCipher(EncryptedPayload payload)
         {
             using (var fileReader = File.OpenText(config.KeyPaths.PublicKeyFilePath))
             {
@@ -203,10 +204,10 @@ namespace Abenity.Members
             }
         }
 
-        private static FormUrlEncodedContent CreateHttpContent<TPayload>(TPayload content)
+        private static HttpContent CreateHttpContent<TPayload>(TPayload content)
         {
-            var data = FormSerializer<TPayload>.Serialize(content);
-            return new FormUrlEncodedContent(data);
+            var data = FormSerializer<TPayload>.AsString(content);
+            return new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
         }
 
         private static TModel DeserializeJsonResponse<TModel>(Stream stream)
@@ -220,8 +221,8 @@ namespace Abenity.Members
             using (var jtr = new JsonTextReader(sr))
             {
                 var js = new JsonSerializer();
-                var searchResult = js.Deserialize<TModel>(jtr);
-                return searchResult;
+                var model = js.Deserialize<TModel>(jtr);
+                return model;
             }
         }
 
@@ -240,11 +241,11 @@ namespace Abenity.Members
             return content;
         }
 
-        private string BaseEncode(string input) => $"{WebUtility.UrlEncode(Convert.ToBase64String(Encoding.UTF8.GetBytes(input)))}decode";
+        private string BaseEncode(string input) => $"{input.ToByteArray().ToBase64().ToUrlEncoded()}decode";
 
-        private string BaseEncode(byte[] input) => $"{WebUtility.UrlEncode(Convert.ToBase64String(input))}decode";
+        private string BaseEncode(byte[] input) => $"{input.ToBase64().ToUrlEncoded()}decode";
 
         private static void SetSecurityProtocol() =>
-           ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls11 | System.Net.SecurityProtocolType.Tls12;
+           ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
     }
 }

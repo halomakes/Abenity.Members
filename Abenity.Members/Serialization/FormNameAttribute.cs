@@ -11,5 +11,7 @@ namespace Abenity.Members.Serialization
         }
 
         public string FormName { get; }
+
+        public bool Encode { get; set; }
     }
 }
