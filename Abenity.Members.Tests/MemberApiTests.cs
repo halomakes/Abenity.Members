@@ -6,7 +6,7 @@ using Xunit.Abstractions;
 
 namespace Abenity.Members.Tests
 {
-    public class UnitTest1
+    public class MemberApiTests
     {
         private readonly IAbenityMembersApiClient apiClient = new AbenityMembersApiClient(new AbenityConfiguration
         {
@@ -19,13 +19,13 @@ namespace Abenity.Members.Tests
             },
             KeyPaths = new AbenityConfiguration.ClientKeys
             {
-                PrivateKeyFilePath = "",
-                PublicKeyFilePath = ""
+                PrivateKeyFilePath = "./keys/private.pem",
+                PublicKeyFilePath = "./keys/public.pem"
             }
         }, new HttpClient());
         private readonly ITestOutputHelper output;
 
-        public UnitTest1(ITestOutputHelper output)
+        public MemberApiTests(ITestOutputHelper output)
         {
             this.output = output;
         }
@@ -51,6 +51,18 @@ namespace Abenity.Members.Tests
             Assert.NotNull(result.Token);
             Assert.NotEmpty(result.Token);
             output.WriteLine($"Successfully authenticated user: {result.Token}");
+        }
+
+        [Fact]
+        public async Task Should_Deactivate()
+        {
+            await apiClient.DeactivateUserAsync("1");
+        }
+
+        [Fact]
+        public async Task Should_Reactivate()
+        {
+            await apiClient.ReactivateUserAsync("1");
         }
     }
 }
