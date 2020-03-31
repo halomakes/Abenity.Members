@@ -48,13 +48,13 @@ namespace Abenity.Members.Schema
         /// <summary>
         /// User's first name
         /// </summary>
-        [FormName("firstname", Encode = true)]
+        [FormName("firstname", Encode = true), Required]
         public string FirstName { get; set; }
 
         /// <summary>
         /// User's last name
         /// </summary>
-        [FormName("lastname", Encode = true)]
+        [FormName("lastname", Encode = true), Required]
         public string LastName { get; set; }
 
         /// <summary>
@@ -79,14 +79,14 @@ namespace Abenity.Members.Schema
         /// User's ZIP/postal code
         /// </summary>
         /// <remarks>The format of this value will be validated against the Country value.</remarks>
-        [FormName("zip", Encode = true)]
+        [FormName("zip", Encode = true), Required]
         public string Zip { get; set; }
 
         /// <summary>
         /// User's country code
         /// </summary>
         /// <remarks>Formatted as ISO 3166-1 alpha-2 (e.g. US).</remarks>
-        [FormName("country", Encode = true)]
+        [FormName("country", Encode = true), Required]
         public string Country { get; set; }
 
         /// <summary>
