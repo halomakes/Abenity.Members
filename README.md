@@ -60,7 +60,7 @@ This libary is based on the official package provided by Abenity and shares most
 
 ## Dependencies
 * **BouncyCastle** 1.8.5+
-* **NewtonSoft.Json** 10.0.3+
+* **Newtonsoft.Json** 10.0.3+
 * **System.ComponentModel.Annotations** 4.7.0+
 
 ## Changelog
