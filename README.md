@@ -1,4 +1,4 @@
-# Abenity.Members [![NuGet Logo](https://raw.githubusercontent.com/NuGet/Media/master/Images/MainLogo/32x32/nuget_32.png)](https://www.nuget.org/packages/Abenity.Members/) ![Build Status](https://api.travis-ci.org/halomademeapc/Abenity.Members.svg?branch=master&status=failed)
+# Abenity.Members [![NuGet](https://img.shields.io/nuget/v/Abenity.Members)](https://www.nuget.org/packages/Abenity.Members/) ![Build Status](https://api.travis-ci.org/halomademeapc/Abenity.Members.svg?branch=master&status=failed)
 .NET Standard API Client for interacting with the [Abenity Members API](https://abenity.com/developers/api/members)
 This is offered as an alternative to the office [abenity-csharp](https://github.com/Abenity/abenity-csharp) library with some enhancements.
 
