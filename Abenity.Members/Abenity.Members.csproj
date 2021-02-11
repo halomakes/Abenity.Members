@@ -9,10 +9,11 @@
     <RepositoryUrl>https://github.com/halomademeapc/Abenity.Members</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags>abenity</PackageTags>
-    <PackageReleaseNotes>Initial Release</PackageReleaseNotes>
+    <PackageReleaseNotes>Improve error logging</PackageReleaseNotes>
     <PackageIcon>icon.png</PackageIcon>
     <PackageIconUrl />
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>

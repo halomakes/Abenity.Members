@@ -98,16 +98,18 @@ namespace Abenity.Members
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var result = DeserializeJsonResponse<AbenityResponse<TResponse>>(stream);
+                    var result = DeserializeJsonStream<AbenityResponse<TResponse>>(stream);
                     if (result.Status == AbenityStatus.Ok)
                     {
                         return result.Data;
                     }
                 }
 
+                var responseContent = await StreamToStringAsync(stream);
                 throw new AbenityException
                 {
-                    ApiError = DeserializeJsonResponse<AbenityError>(stream)
+                    RawResponse = responseContent,
+                    ApiError = JsonConvert.DeserializeObject<AbenityError>(responseContent)
                 };
             }
         }
@@ -124,16 +126,18 @@ namespace Abenity.Members
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var result = DeserializeJsonResponse<AbenityResponse>(stream);
+                    var result = DeserializeJsonStream<AbenityResponse>(stream);
                     if (result.Status == AbenityStatus.Ok)
                     {
                         return;
                     }
                 }
 
+                var responseContent = await StreamToStringAsync(stream);
                 throw new AbenityException
                 {
-                    ApiError = DeserializeJsonResponse<AbenityError>(stream)
+                    RawResponse = responseContent,
+                    ApiError = JsonConvert.DeserializeObject<AbenityError>(responseContent)
                 };
             }
         }
@@ -210,7 +214,7 @@ namespace Abenity.Members
             return new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
         }
 
-        private static TModel DeserializeJsonResponse<TModel>(Stream stream)
+        private static TModel DeserializeJsonStream<TModel>(Stream stream)
         {
             if (stream == null || stream.CanRead == false)
             {
