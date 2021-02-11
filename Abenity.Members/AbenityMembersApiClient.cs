@@ -106,11 +106,21 @@ namespace Abenity.Members
                 }
 
                 var responseContent = await StreamToStringAsync(stream);
-                throw new AbenityException
+                try
                 {
-                    RawResponse = responseContent,
-                    ApiError = JsonConvert.DeserializeObject<AbenityError>(responseContent)
-                };
+                    throw new AbenityException
+                    {
+                        RawResponse = responseContent,
+                        ApiError = JsonConvert.DeserializeObject<AbenityError>(responseContent)
+                    };
+                }
+                catch
+                {
+                    throw new AbenityException
+                    {
+                        RawResponse = responseContent
+                    };
+                }
             }
         }
 
@@ -134,11 +144,21 @@ namespace Abenity.Members
                 }
 
                 var responseContent = await StreamToStringAsync(stream);
-                throw new AbenityException
+                try
                 {
-                    RawResponse = responseContent,
-                    ApiError = JsonConvert.DeserializeObject<AbenityError>(responseContent)
-                };
+                    throw new AbenityException
+                    {
+                        RawResponse = responseContent,
+                        ApiError = JsonConvert.DeserializeObject<AbenityError>(responseContent)
+                    };
+                }
+                catch
+                {
+                    throw new AbenityException
+                    {
+                        RawResponse = responseContent
+                    };
+                }
             }
         }
 
