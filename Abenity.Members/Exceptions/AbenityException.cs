@@ -18,6 +18,6 @@ namespace Abenity.Members.Exceptions
         /// </summary>
         public string RawResponse { get; set; }
 
-        public override string Message => $"Recieved error response from Abenity API: {ApiError.Error?.Signature}";
+        public override string Message => $"Recieved error response from Abenity API: {ApiError?.Error?.Signature ?? RawResponse}";
     }
 }
